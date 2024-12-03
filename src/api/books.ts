@@ -3,7 +3,7 @@ import type { Book } from "../types/book";
 
 interface BookQuery {
   q?: string;
-  fields?: string[];
+  fields?: string;
   from?: number;
   size?: number;
 }

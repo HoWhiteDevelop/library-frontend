@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../store/slices/authSlice";
 import type { AppDispatch, RootState } from "../store";
+// import { searchBooks } from "../api/books";
 
 const Login = () => {
   const { message } = App.useApp();
@@ -14,6 +15,13 @@ const Login = () => {
 
   const onFinish = async (values: { username: string; password: string }) => {
     try {
+      // const response: any = await searchBooks({
+      //   q: "简史",
+      //   fields: "title",
+      //   from: 0,
+      //   size: 10,
+      // });
+      // console.log(response.data.hits.hits);
       const result = await dispatch(login(values)).unwrap();
       message.success("登录成功，即将跳转...");
       setTimeout(() => {
