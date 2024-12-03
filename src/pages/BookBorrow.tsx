@@ -18,9 +18,9 @@ const BookBorrow = () => {
     dispatch(fetchBooks());
   }, [dispatch]);
 
-  const handleBorrow = async (bookId: string) => {
+  const handleBorrow = async (bookId: number) => {
     try {
-      await borrowBook(bookId);
+      await borrowBook(bookId.toString());
       message.success("借阅成功");
       dispatch(fetchBooks());
     } catch {
@@ -48,6 +48,12 @@ const BookBorrow = () => {
       key: "isbn",
     },
     {
+      title: "描述",
+      dataIndex: "description",
+      key: "description",
+      ellipsis: true,
+    },
+    {
       title: "状态",
       dataIndex: "status",
       key: "status",
@@ -56,13 +62,6 @@ const BookBorrow = () => {
           {status === "available" ? "可借" : "已借出"}
         </Tag>
       ),
-    },
-    {
-      title: "位置",
-      dataIndex: "location",
-      key: "location",
-      render: (location: Book["location"]) =>
-        `${location.area}-${location.shelf}-${location.position}`,
     },
     {
       title: "操作",

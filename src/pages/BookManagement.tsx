@@ -92,6 +92,18 @@ const BookManagement = () => {
       key: "isbn",
     },
     {
+      title: "描述",
+      dataIndex: "description",
+      key: "description",
+      ellipsis: true,
+    },
+    {
+      title: "价格",
+      dataIndex: "price",
+      key: "price",
+      render: (price: number) => `¥${price.toFixed(2)}`,
+    },
+    {
       title: "状态",
       dataIndex: "status",
       key: "status",
@@ -100,13 +112,6 @@ const BookManagement = () => {
           {status === "available" ? "可借" : "已借出"}
         </Tag>
       ),
-    },
-    {
-      title: "位置",
-      dataIndex: "location",
-      key: "location",
-      render: (location: Book["location"]) =>
-        `${location.area}-${location.shelf}-${location.position}`,
     },
     {
       title: "操作",
@@ -118,7 +123,7 @@ const BookManagement = () => {
           </Button>
           <Popconfirm
             title="确定要删除这本书吗？"
-            onConfirm={() => handleDelete(record.id)}
+            onConfirm={() => handleDelete(record.id.toString())}
             okText="确定"
             cancelText="取消"
           >
@@ -196,19 +201,11 @@ const BookManagement = () => {
           </Form.Item>
 
           <Form.Item
-            label="出版社"
-            name="publisher"
-            rules={[{ required: true, message: "请输入出版社" }]}
+            label="描述"
+            name="description"
+            rules={[{ required: true, message: "请输入描述" }]}
           >
-            <Input placeholder="请输入出版社" />
-          </Form.Item>
-
-          <Form.Item
-            label="出版日期"
-            name="publishDate"
-            rules={[{ required: true, message: "请输入出版日期" }]}
-          >
-            <Input placeholder="请输入出版日期" />
+            <Input.TextArea rows={4} placeholder="请输入描述" />
           </Form.Item>
 
           <Form.Item
@@ -224,38 +221,12 @@ const BookManagement = () => {
             />
           </Form.Item>
 
-          <Form.Item label="位置" required style={{ marginBottom: 0 }}>
-            <Input.Group compact>
-              <Form.Item
-                name={["location", "area"]}
-                rules={[{ required: true, message: "请输入区域" }]}
-                style={{ display: "inline-block", width: "33%" }}
-              >
-                <Input placeholder="区域" />
-              </Form.Item>
-              <Form.Item
-                name={["location", "shelf"]}
-                rules={[{ required: true, message: "请输入书架号" }]}
-                style={{
-                  display: "inline-block",
-                  width: "33%",
-                  margin: "0 2px",
-                }}
-              >
-                <Input placeholder="书架号" />
-              </Form.Item>
-              <Form.Item
-                name={["location", "position"]}
-                rules={[{ required: true, message: "请输入位置号" }]}
-                style={{ display: "inline-block", width: "33%" }}
-              >
-                <Input placeholder="位置号" />
-              </Form.Item>
-            </Input.Group>
-          </Form.Item>
-
-          <Form.Item label="简介" name="description">
-            <TextArea rows={4} placeholder="请输入图书简介" />
+          <Form.Item
+            label="出版日期"
+            name="publishDate"
+            rules={[{ required: true, message: "请输入出版日期" }]}
+          >
+            <Input placeholder="请输入出版日期" />
           </Form.Item>
 
           <Form.Item className="mb-0">

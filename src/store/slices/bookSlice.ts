@@ -17,7 +17,7 @@ const initialState: BookState = {
 
 export const fetchBooks = createAsyncThunk("book/fetchBooks", async () => {
   const response = await getBooks();
-  return response.data.data;
+  return response.data;
 });
 
 export const createBookRecommendation = createAsyncThunk(

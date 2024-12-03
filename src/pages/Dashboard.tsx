@@ -27,15 +27,6 @@ const Dashboard = () => {
   const availableBooks = books.filter(
     (book) => book.status === "available"
   ).length;
-  const overdueBooks = books.filter((book) => {
-    if (!book.borrowHistory?.length) return false;
-    const lastBorrow = book.borrowHistory[book.borrowHistory.length - 1];
-    return (
-      !lastBorrow.returnDate &&
-      new Date(lastBorrow.borrowDate) <
-        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-    );
-  }).length;
 
   return (
     <div className="page-container">
@@ -65,16 +56,6 @@ const Dashboard = () => {
               title="可借图书"
               value={availableBooks}
               prefix={<UserOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card loading={loading}>
-            <Statistic
-              title="逾期未还"
-              value={overdueBooks}
-              prefix={<AlertOutlined />}
-              valueStyle={{ color: overdueBooks > 0 ? "#cf1322" : undefined }}
             />
           </Card>
         </Col>
