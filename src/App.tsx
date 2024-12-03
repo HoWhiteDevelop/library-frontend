@@ -1,14 +1,16 @@
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { restoreSession } from "./store/slices/authSlice";
 
 // 页面组件导入
 import Login from "./pages/Login";
@@ -30,9 +32,15 @@ interface RootState {
 }
 
 function App() {
+  const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
   );
+
+  // 添加初始化逻辑
+  useEffect(() => {
+    dispatch(restoreSession());
+  }, [dispatch]);
 
   return (
     <ConfigProvider

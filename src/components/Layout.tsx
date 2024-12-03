@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Layout as AntLayout, Menu, Avatar, Dropdown } from "antd";
 import { useNavigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -26,6 +27,7 @@ interface RootState {
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const menuItems = [
@@ -82,6 +84,11 @@ const Layout = () => {
   ];
 
   const handleMenuClick = ({ key }: { key: string }) => {
+    if (key === "logout") {
+      dispatch(logout());
+      navigate("/login");
+      return;
+    }
     navigate(`/${key}`);
   };
 

@@ -40,7 +40,7 @@ const Login = () => {
           autoComplete="off"
           layout="vertical"
           preserve={true}
-          noValidate
+          // noValidate
         >
           <Form.Item
             name="username"

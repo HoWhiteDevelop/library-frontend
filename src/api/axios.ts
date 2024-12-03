@@ -1,5 +1,7 @@
 import axios from "axios";
 import { message } from "antd";
+import { store } from "../store";
+import { logout } from "../store/slices/authSlice";
 
 const instance = axios.create({
   baseURL: "http://localhost:3000",
@@ -8,7 +10,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    console.log("发送请求:", config.method, config.url, config.data);
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -23,9 +24,9 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("请求错误:", error);
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
+      store.dispatch(logout());
+      message.error("登录已过期，请重新登录");
     }
     return Promise.reject(error);
   }
