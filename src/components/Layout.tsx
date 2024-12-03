@@ -12,6 +12,7 @@ import {
   FileTextOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import Logo from "./Logo";
 
 const { Header, Sider, Content } = AntLayout;
 
@@ -20,6 +21,7 @@ interface RootState {
     user: {
       role: string;
       name: string;
+      avatar?: string;
     } | null;
   };
 }
@@ -95,7 +97,7 @@ const Layout = () => {
   return (
     <AntLayout className="min-h-screen">
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="h-8 m-4 bg-white/10" />
+        <Logo />
         <Menu
           theme="dark"
           mode="inline"
@@ -125,7 +127,11 @@ const Layout = () => {
             placement="bottomRight"
           >
             <div className="flex items-center cursor-pointer">
-              <Avatar icon={<UserOutlined />} />
+              <Avatar
+                icon={<UserOutlined />}
+                src={user?.avatar}
+                className="hover:opacity-80 transition-opacity"
+              />
               <span className="ml-2">{user?.name}</span>
             </div>
           </Dropdown>

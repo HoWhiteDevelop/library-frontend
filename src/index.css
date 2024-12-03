@@ -42,3 +42,96 @@
   --text-color-secondary: rgba(0, 0, 0, 0.45);
   --border-radius-base: 4px;
 }
+
+/* 登录页面样式 */
+.login-container {
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo 动画 */
+.animate-logo {
+  animation: logoReveal 1s ease-out forwards, logoGlow 2s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes logoReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    filter: brightness(1);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    filter: brightness(1.2);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* 修改 Layout 中的 logo 容器样式 */
+.logo-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.02);
+}

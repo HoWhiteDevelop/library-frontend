@@ -8,6 +8,7 @@ import {
   Space,
   DatePicker,
   message,
+  Tag,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useSelector } from "react-redux";
@@ -18,7 +19,6 @@ import { DownloadOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 interface BookStatusFilter {
-  area?: string;
   status?: string;
   dateRange?: [string, string];
 }
@@ -30,23 +30,19 @@ const BookStatusReport = () => {
 
   const handleFilter = (values: BookStatusFilter) => {
     let filtered = [...books];
-    if (values.area) {
-      filtered = filtered.filter((book) => book.location.area === values.area);
-    }
     if (values.status) {
       filtered = filtered.filter((book) => book.status === values.status);
     }
     if (values.dateRange) {
       const [start, end] = values.dateRange;
       filtered = filtered.filter(
-        (book) => book.createdAt >= start && book.createdAt <= end
+        (book) => book.publishDate >= start && book.publishDate <= end
       );
     }
     setFilteredBooks(filtered);
   };
 
   const handleExport = () => {
-    // 实现导出Excel功能
     message.success("导出成功");
   };
 
@@ -62,22 +58,25 @@ const BookStatusReport = () => {
       key: "isbn",
     },
     {
+      title: "作者",
+      dataIndex: "author",
+      key: "author",
+    },
+    {
+      title: "出版日期",
+      dataIndex: "publishDate",
+      key: "publishDate",
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
+    {
       title: "状态",
       dataIndex: "status",
       key: "status",
-    },
-    {
-      title: "位置",
-      dataIndex: "location",
-      key: "location",
-      render: (location: Book["location"]) =>
-        `${location.area}-${location.shelf}-${location.position}`,
-    },
-    {
-      title: "入库时间",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (status: string) => (
+        <Tag color={status === "available" ? "green" : "red"}>
+          {status === "available" ? "可借" : "已借出"}
+        </Tag>
+      ),
     },
   ];
 
@@ -89,21 +88,13 @@ const BookStatusReport = () => {
         onFinish={handleFilter}
         className="mb-4"
       >
-        <Form.Item name="area" label="馆藏区">
-          <Select style={{ width: 120 }} allowClear>
-            <Option value="A">A区</Option>
-            <Option value="B">B区</Option>
-            <Option value="C">C区</Option>
-          </Select>
-        </Form.Item>
         <Form.Item name="status" label="状态">
           <Select style={{ width: 120 }} allowClear>
             <Option value="available">可借</Option>
             <Option value="borrowed">已借出</Option>
-            <Option value="processing">处理中</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="dateRange" label="入库时间">
+        <Form.Item name="dateRange" label="出版日期">
           <DatePicker.RangePicker />
         </Form.Item>
         <Form.Item>

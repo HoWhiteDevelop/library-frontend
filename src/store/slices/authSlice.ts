@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { message } from "antd";
 import { login as loginApi } from "../../api/auth";
 import { AxiosError } from "axios";
@@ -9,6 +9,7 @@ interface AuthState {
     id: string;
     name: string;
     role: string;
+    avatar?: string;
   } | null;
   loading: boolean;
   error: string | null;
@@ -63,9 +64,12 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("userAvatar");
     },
     restoreSession: (state) => {
       const token = localStorage.getItem("token");
+      const avatar = localStorage.getItem("userAvatar");
+
       if (token) {
         try {
           const tokenPayload = JSON.parse(atob(token.split(".")[1]));
@@ -74,10 +78,18 @@ const authSlice = createSlice({
             id: tokenPayload.sub,
             name: tokenPayload.username,
             role: tokenPayload.role,
+            avatar: avatar || undefined,
           };
         } catch (error) {
           localStorage.removeItem("token");
+          localStorage.removeItem("userAvatar");
         }
+      }
+    },
+    updateUserAvatar: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.avatar = action.payload;
+        localStorage.setItem("userAvatar", action.payload);
       }
     },
   },
@@ -89,7 +101,10 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.user = action.payload.user;
+        state.user = {
+          ...action.payload.user,
+          avatar: localStorage.getItem("userAvatar") || undefined,
+        };
         state.loading = false;
         state.error = null;
         localStorage.setItem("token", action.payload.token);
@@ -103,5 +118,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, restoreSession } = authSlice.actions;
+export const { logout, restoreSession, updateUserAvatar } = authSlice.actions;
 export default authSlice.reducer;

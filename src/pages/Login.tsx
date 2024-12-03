@@ -25,14 +25,28 @@ const Login = () => {
       }, 500);
     } catch (error) {
       console.error("登录失败:", error);
-      message.error("登录失败: " + (error.message || "未知错误"));
+      message.error("登录失败: " + ((error as Error).message || "未知错误"));
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-96">
-        <h1 className="text-2xl font-bold text-center mb-8">图书馆管理系统</h1>
+    <div className="login-container min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600">
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div className="absolute inset-0 animate-pulse-slow bg-gradient-to-t from-transparent to-white/10"></div>
+      </div>
+
+      <Card
+        className="w-96 shadow-2xl backdrop-blur-sm bg-white/90 animate-fade-in"
+        bordered={false}
+      >
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            图书馆管理系统
+          </h1>
+          <p className="text-gray-500 mt-2">欢迎使用图书馆管理系统</p>
+        </div>
+
         <Form
           form={form}
           name="login"
@@ -40,16 +54,16 @@ const Login = () => {
           autoComplete="off"
           layout="vertical"
           preserve={true}
-          // noValidate
         >
           <Form.Item
             name="username"
             rules={[{ required: true, message: "请输入用户名" }]}
           >
             <Input
-              prefix={<UserOutlined />}
+              prefix={<UserOutlined className="text-gray-400" />}
               placeholder="用户名"
               size="large"
+              className="rounded-lg"
             />
           </Form.Item>
 
@@ -58,9 +72,10 @@ const Login = () => {
             rules={[{ required: true, message: "请输入密码" }]}
           >
             <Input.Password
-              prefix={<LockOutlined />}
+              prefix={<LockOutlined className="text-gray-400" />}
               placeholder="密码"
               size="large"
+              className="rounded-lg"
             />
           </Form.Item>
 
@@ -69,7 +84,7 @@ const Login = () => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              className="w-full"
+              className="w-full h-10 rounded-lg text-lg"
               size="large"
             >
               登录

@@ -10,9 +10,15 @@ import {
   Tabs,
   Table,
   Tag,
+  Upload,
+  Avatar,
 } from "antd";
+import { LoadingOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import type { UploadChangeParam } from "antd/es/upload";
+import type { RcFile, UploadFile } from "antd/es/upload/interface";
 import type { ColumnsType } from "antd/es/table";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUserAvatar } from "../store/slices/authSlice";
 import type { Book } from "../types/book";
 import type { RootState } from "../store";
 
@@ -30,8 +36,52 @@ interface UserInfo {
 const Profile = () => {
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const { books } = useSelector((state: RootState) => state.book);
+
+  const getBase64 = (img: RcFile, callback: (url: string) => void) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result as string));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file: RcFile) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("只能上传 JPG/PNG 格式的图片!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("图片大小不能超过 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
+  const handleChange = async (info: UploadChangeParam<UploadFile>) => {
+    const file = info.file.originFileObj;
+    if (!file) return;
+
+    try {
+      getBase64(file as RcFile, (url) => {
+        setLoading(false);
+        dispatch(updateUserAvatar(url));
+        localStorage.setItem("userAvatar", url);
+        message.success("头像更新成功");
+      });
+    } catch (error) {
+      setLoading(false);
+      message.error("头像更新失败");
+    }
+  };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>上传头像</div>
+    </div>
+  );
 
   // 模拟用户详细信息
   const userInfo: UserInfo = {
@@ -126,21 +176,49 @@ const Profile = () => {
           </Button>
         }
       >
-        <Descriptions column={2}>
-          <Descriptions.Item label="姓名">{userInfo.name}</Descriptions.Item>
-          <Descriptions.Item label="角色">{userInfo.role}</Descriptions.Item>
-          <Descriptions.Item label="邮箱">{userInfo.email}</Descriptions.Item>
-          <Descriptions.Item label="电话">{userInfo.phone}</Descriptions.Item>
-          <Descriptions.Item label="部门">
-            {userInfo.department}
-          </Descriptions.Item>
-          <Descriptions.Item label="借阅次数">
-            {userInfo.borrowCount}
-          </Descriptions.Item>
-          <Descriptions.Item label="逾期次数">
-            {userInfo.overdueTimes}
-          </Descriptions.Item>
-        </Descriptions>
+        <div className="flex items-start space-x-8">
+          <div className="flex flex-col items-center space-y-4">
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              beforeUpload={beforeUpload}
+              onChange={handleChange}
+              customRequest={({ onSuccess }) => {
+                if (onSuccess) onSuccess("ok");
+              }}
+            >
+              {user?.avatar ? (
+                <Avatar
+                  size={100}
+                  src={user.avatar}
+                  alt="avatar"
+                  className="cursor-pointer hover:opacity-80"
+                />
+              ) : (
+                uploadButton
+              )}
+            </Upload>
+            <span className="text-gray-500 text-sm">点击更换头像</span>
+          </div>
+
+          <Descriptions column={2} className="flex-1">
+            <Descriptions.Item label="姓名">{userInfo.name}</Descriptions.Item>
+            <Descriptions.Item label="角色">{userInfo.role}</Descriptions.Item>
+            <Descriptions.Item label="邮箱">{userInfo.email}</Descriptions.Item>
+            <Descriptions.Item label="电话">{userInfo.phone}</Descriptions.Item>
+            <Descriptions.Item label="部门">
+              {userInfo.department}
+            </Descriptions.Item>
+            <Descriptions.Item label="借阅次数">
+              {userInfo.borrowCount}
+            </Descriptions.Item>
+            <Descriptions.Item label="逾期次数">
+              {userInfo.overdueTimes}
+            </Descriptions.Item>
+          </Descriptions>
+        </div>
       </Card>
 
       <Card className="mt-4">
