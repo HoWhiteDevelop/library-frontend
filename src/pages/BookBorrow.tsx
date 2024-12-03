@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Card, Input, Button, Tag, message } from "antd";
+import { Table, Card, Input, Button, Tag, App } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBooks } from "../store/slices/bookSlice";
@@ -10,6 +10,7 @@ import type { AppDispatch, RootState } from "../store";
 const { Search } = Input;
 
 const BookBorrow = () => {
+  const { message } = App.useApp();
   const dispatch = useDispatch<AppDispatch>();
   const { books, loading } = useSelector((state: RootState) => state.book);
   const [searchText, setSearchText] = useState("");

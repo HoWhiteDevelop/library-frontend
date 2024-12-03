@@ -1,4 +1,4 @@
-import { Form, Input, Button, Card, message } from "antd";
+import { Form, Input, Button, Card, App } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { login } from "../store/slices/authSlice";
 import type { AppDispatch, RootState } from "../store";
 
 const Login = () => {
+  const { message } = App.useApp();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { loading } = useSelector((state: RootState) => state.auth);
@@ -14,17 +15,13 @@ const Login = () => {
   const onFinish = async (values: { username: string; password: string }) => {
     try {
       const result = await dispatch(login(values)).unwrap();
-      console.log("登录成功:", result);
+      message.success("登录成功，即将跳转...");
       setTimeout(() => {
         if (result.user) {
-          message.success("登录成功，即将跳转...");
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 1000);
+          navigate("/dashboard");
         }
-      }, 500);
+      }, 1000);
     } catch (error) {
-      console.error("登录失败:", error);
       message.error("登录失败: " + ((error as Error).message || "未知错误"));
     }
   };

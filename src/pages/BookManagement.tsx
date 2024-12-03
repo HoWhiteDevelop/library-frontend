@@ -8,9 +8,9 @@ import {
   Modal,
   Form,
   InputNumber,
-  message,
   Space,
   Popconfirm,
+  App,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +29,7 @@ const BookManagement = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const { books, loading } = useSelector((state: RootState) => state.book);
+  const { message } = App.useApp();
 
   useEffect(() => {
     dispatch(fetchBooks());

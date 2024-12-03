@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { message } from "antd";
 import { login as loginApi } from "../../api/auth";
 import { AxiosError } from "axios";
 
@@ -108,12 +107,10 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
         localStorage.setItem("token", action.payload.token);
-        message.success("登录成功");
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) || "登录失败";
-        message.error(state.error);
       });
   },
 });
