@@ -6,6 +6,7 @@ import { fetchBooks } from "../store/slices/bookSlice";
 import { borrowBook } from "../api/books";
 import type { Book } from "../types/book";
 import type { AppDispatch, RootState } from "../store";
+import PageTransition from "../components/PageTransition";
 
 const { Search } = Input;
 
@@ -80,31 +81,33 @@ const BookBorrow = () => {
   ];
 
   return (
-    <div className="page-container">
-      <Card title="图书借阅">
-        <div className="mb-4">
-          <Search
-            placeholder="搜索书名"
-            allowClear
-            enterButton
-            className="max-w-md"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+    <PageTransition>
+      <div className="page-container">
+        <Card title="图书借阅">
+          <div className="mb-4">
+            <Search
+              placeholder="搜索书名"
+              allowClear
+              enterButton
+              className="max-w-md"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+          <Table
+            columns={columns}
+            dataSource={books}
+            loading={loading}
+            rowKey="id"
+            pagination={{
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total) => `共 ${total} 条`,
+            }}
           />
-        </div>
-        <Table
-          columns={columns}
-          dataSource={books}
-          loading={loading}
-          rowKey="id"
-          pagination={{
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total) => `共 ${total} 条`,
-          }}
-        />
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </PageTransition>
   );
 };
 

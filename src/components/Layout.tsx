@@ -13,6 +13,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import Logo from "./Logo";
+import { AnimatePresence } from "framer-motion";
 
 const { Header, Sider, Content } = AntLayout;
 
@@ -136,8 +137,10 @@ const Layout = () => {
             </div>
           </Dropdown>
         </Header>
-        <Content className="m-6 p-6 bg-white">
-          <Outlet />
+        <Content className="m-6">
+          <AnimatePresence mode="wait">
+            <Outlet />
+          </AnimatePresence>
         </Content>
       </AntLayout>
     </AntLayout>
