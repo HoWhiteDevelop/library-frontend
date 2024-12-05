@@ -1,16 +1,18 @@
-import { Form, Input, Button, Card, App } from "antd";
+import { Form, Input, Button, Card, App, Modal } from "antd";
 import {
   UserOutlined,
   LockOutlined,
   MailOutlined,
   GithubOutlined,
   WechatOutlined,
+  QqOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../store/slices/authSlice";
 import type { AppDispatch, RootState } from "../store";
 import { motion } from "framer-motion";
+import { getOAuthURL } from "../api/auth";
 
 const Login = () => {
   const { message } = App.useApp();
@@ -69,9 +71,44 @@ const Login = () => {
   };
 
   const socialIcons = [
-    { type: "邮箱", icon: <MailOutlined style={{ fontSize: "1.2rem" }} /> },
-    { type: "微信", icon: <WechatOutlined style={{ fontSize: "1.2rem" }} /> },
-    { type: "Github", icon: <GithubOutlined style={{ fontSize: "1.2rem" }} /> },
+    {
+      type: "邮箱",
+      icon: <MailOutlined style={{ fontSize: "1.2rem" }} />,
+      onClick: () => {
+        // 邮箱登录可以打开一个模态框
+        Modal.info({
+          title: "邮箱登录",
+          content: (
+            <Form>
+              <Form.Item
+                name="email"
+                rules={[{ required: true, type: "email" }]}
+              >
+                <Input placeholder="请输入邮箱" />
+              </Form.Item>
+            </Form>
+          ),
+        });
+      },
+    },
+    {
+      type: "微信",
+      icon: <WechatOutlined style={{ fontSize: "1.2rem" }} />,
+      onClick: () => {
+        // 微信登录通常需要打开一个新窗口
+        const url = getOAuthURL("wechat");
+        window.open(url, "wechat-login", "width=600,height=600");
+      },
+    },
+    {
+      type: "Github",
+      icon: <GithubOutlined style={{ fontSize: "1.2rem" }} />,
+      onClick: () => {
+        // GitHub OAuth 登录
+        const url = getOAuthURL("github");
+        window.location.href = url; // 直接跳转
+      },
+    },
   ];
 
   return (
@@ -121,7 +158,7 @@ const Login = () => {
             className="flex justify-center space-x-4 mb-8"
             variants={itemVariants}
           >
-            {socialIcons.map(({ type, icon }, index) => (
+            {socialIcons.map(({ type, icon, onClick }, index) => (
               <motion.button
                 key={type}
                 className="p-2.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm outline-none focus:outline-none border-none"
@@ -130,6 +167,7 @@ const Login = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
+                onClick={onClick}
               >
                 <span className="text-white flex items-center justify-center w-6 h-6">
                   {icon}

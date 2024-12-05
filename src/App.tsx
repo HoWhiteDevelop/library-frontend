@@ -20,6 +20,7 @@ import BookBorrow from "./pages/BookBorrow";
 import BookManagement from "./pages/BookManagement";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
+import OAuthCallback from "./pages/OAuthCallback";
 
 // 类型定义
 interface RootState {
@@ -99,6 +100,10 @@ function App() {
               element={
                 <Navigate to={isAuthenticated ? "/dashboard" : "/login"} />
               }
+            />
+            <Route
+              path="/auth/:provider/callback"
+              element={<OAuthCallback />}
             />
           </Routes>
         </Router>
