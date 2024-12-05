@@ -104,8 +104,8 @@ const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
             <Link to={item.path}>
               <motion.div
                 className={clsx(
-                  "mx-4 my-2 px-6 py-3 rounded-xl cursor-pointer",
-                  "flex items-center gap-3 relative",
+                  "mx-4 my-2 px-4 py-3 rounded-xl cursor-pointer",
+                  "flex items-center gap-4 relative",
                   "hover:bg-white/10",
                   (location.pathname === item.path ||
                     item.children?.some(
@@ -116,11 +116,11 @@ const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
                 whileHover={{ x: 5 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="text-xl min-w-[24px] flex items-center justify-center">
+                <span className="text-lg min-w-[24px] flex items-center justify-center">
                   {item.icon}
                 </span>
                 {!collapsed && (
-                  <span className="font-medium whitespace-nowrap">
+                  <span className="font-medium whitespace-nowrap text-sm">
                     {item.text}
                   </span>
                 )}
@@ -132,8 +132,8 @@ const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
                 <Link to={child.path} key={child.path}>
                   <motion.div
                     className={clsx(
-                      "pl-12 pr-6 py-3 mx-4 my-2 rounded-xl cursor-pointer",
-                      "flex items-center gap-3 relative",
+                      "pl-12 pr-4 py-3 mx-4 my-2 rounded-xl cursor-pointer",
+                      "flex items-center gap-4 relative",
                       "hover:bg-white/10",
                       location.pathname === child.path &&
                         "bg-white/10 text-white before:content-[''] before:absolute before:inset-0 before:border before:border-transparent before:bg-gradient-to-r before:from-pink-500 before:to-purple-600 before:rounded-xl before:-z-10 before:p-[1px] before:mask-gradient"
@@ -141,10 +141,10 @@ const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
                     whileHover={{ x: 5 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <span className="text-xl min-w-[24px] flex items-center justify-center">
+                    <span className="text-lg min-w-[24px] flex items-center justify-center">
                       {child.icon}
                     </span>
-                    <span className="font-medium whitespace-nowrap">
+                    <span className="font-medium whitespace-nowrap text-sm">
                       {child.text}
                     </span>
                   </motion.div>
