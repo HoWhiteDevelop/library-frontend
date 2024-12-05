@@ -13,6 +13,8 @@ import SideNavbar from "./components/SideNavbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { restoreSession } from "./store/slices/authSlice";
 import PageLoading from "./components/PageLoading";
+import TopNavbar from "./components/TopNavbar";
+import LoadingScreen from "./components/LoadingScreen";
 
 // 页面组件导入
 import Login from "./pages/Login";
@@ -45,6 +47,8 @@ const MainContent = styled.div<{ $hasNavbar: boolean }>`
   flex: 1;
   margin-left: ${(props) => (props.$hasNavbar ? "240px" : "0")};
   transition: margin 0.3s ease;
+  display: flex;
+  flex-direction: column;
 
   &.collapsed {
     margin-left: ${(props) => (props.$hasNavbar ? "80px" : "0")};
@@ -81,7 +85,8 @@ function App() {
               $hasNavbar={isAuthenticated}
               className={collapsed ? "collapsed" : ""}
             >
-              <Suspense fallback={<PageLoading />}>
+              {isAuthenticated && <TopNavbar />}
+              <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                   <Route
                     path="/login"

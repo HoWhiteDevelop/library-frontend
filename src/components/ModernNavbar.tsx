@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Avatar } from "antd";
+import { Avatar } from "antd";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useLocation, Link } from "react-router-dom";

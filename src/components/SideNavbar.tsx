@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import styled from "styled-components";
 import { motion } from "framer-motion";
 import {
   HomeOutlined,
   BookOutlined,
   UserOutlined,
-  SettingOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ShoppingCartOutlined,
@@ -16,125 +14,19 @@ import {
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import Logo from "./Logo";
+import clsx from "clsx";
 
-const SidebarWrapper = styled(motion.nav)<{ $collapsed: boolean }>`
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  background: rgba(17, 25, 40, 0.85);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  width: ${(props) => (props.$collapsed ? "80px" : "240px")};
-  transition: width 0.3s ease;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0;
-`;
-
-const LogoSection = styled.div<{ $collapsed: boolean }>`
-  padding: 0 ${(props) => (props.$collapsed ? "1rem" : "1.5rem")};
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: ${(props) =>
-    props.$collapsed ? "center" : "space-between"};
-  margin-bottom: 2rem;
-
-  .logo-text {
-    font-size: 1.5rem;
-    background: linear-gradient(45deg, #ff0080, #7928ca);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: ${(props) => (props.$collapsed ? "none" : "block")};
-  }
-`;
-
-const MenuSection = styled.div`
-  flex: 1;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-  }
-`;
-
-const MenuItem = styled(motion.div)<{ $active?: boolean }>`
-  padding: 0.8rem 1.5rem;
-  margin: 0.5rem 1rem;
-  cursor: pointer;
-  color: ${(props) => (props.$active ? "#fff" : "rgba(255, 255, 255, 0.7)")};
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-  border-radius: 12px;
-  background: ${(props) =>
-    props.$active ? "rgba(255, 255, 255, 0.1)" : "transparent"};
-
-  .icon {
-    font-size: 1.2rem;
-    min-width: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .text {
-    font-weight: 500;
-    white-space: nowrap;
-    opacity: ${(props) => (props.$active ? 1 : 0.7)};
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-
-    &:before {
-      opacity: 1;
-    }
-  }
-
-  &:before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    padding: 1px;
-    background: linear-gradient(45deg, #ff0080, #7928ca);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    opacity: ${(props) => (props.$active ? 1 : 0)};
-    transition: opacity 0.3s ease;
-  }
-`;
-
-const CollapseButton = styled(motion.div)`
-  position: absolute;
-  right: -12px;
-  top: 70px;
-  width: 24px;
-  height: 24px;
-  background: #7928ca;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: white;
-  font-size: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-`;
+interface MenuItem {
+  icon: React.ReactNode;
+  text: string;
+  path: string;
+  children?: MenuItem[];
+}
 
 // 定义管理员菜单项
-const adminMenuItems = [
-  { icon: <HomeOutlined />, text: "首页", path: "/" },
+const adminMenuItems: MenuItem[] = [
+  { icon: <HomeOutlined />, text: "首页", path: "/dashboard" },
   { icon: <BookOutlined />, text: "图书管理", path: "/books/management" },
   {
     icon: <BarChartOutlined />,
@@ -157,8 +49,8 @@ const adminMenuItems = [
 ];
 
 // 定义普通用户菜单项
-const userMenuItems = [
-  { icon: <HomeOutlined />, text: "首页", path: "/" },
+const userMenuItems: MenuItem[] = [
+  { icon: <HomeOutlined />, text: "首页", path: "/dashboard" },
   { icon: <SwapOutlined />, text: "借阅图书", path: "/books/borrow" },
   {
     icon: <ShoppingCartOutlined />,
@@ -182,69 +74,86 @@ const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
     onCollapse(value);
   };
 
-  // 根据用户角色选择显示的菜单项
   const menuItems = user?.role === "admin" ? adminMenuItems : userMenuItems;
 
   return (
-    <SidebarWrapper
-      $collapsed={collapsed}
+    <motion.nav
+      className={clsx(
+        "fixed left-0 top-0 h-screen bg-[rgba(17,25,40,0.85)] backdrop-blur-md border-r border-white/10",
+        "flex flex-col transition-[width] duration-300 ease-in-out z-50",
+        collapsed ? "w-20" : "w-60"
+      )}
       initial={{ x: -240 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <LogoSection $collapsed={collapsed}>
-        <motion.div whileHover={{ scale: 1.05 }}>
-          {collapsed ? "L+" : <span className="logo-text">Library+</span>}
-        </motion.div>
-      </LogoSection>
+      <Logo collapsed={collapsed} />
 
-      <CollapseButton
+      <motion.div
+        className="absolute -right-3 top-[70px] w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer text-white text-xs shadow-lg"
         onClick={() => handleCollapse(!collapsed)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      </CollapseButton>
+      </motion.div>
 
-      <MenuSection>
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
         {menuItems.map((item) => (
           <div key={item.path}>
             <Link to={item.path}>
-              <MenuItem
-                $active={
-                  location.pathname === item.path ||
-                  (item.children?.some(
-                    (child) => location.pathname === child.path
-                  ) ??
-                    false)
-                }
+              <motion.div
+                className={clsx(
+                  "mx-4 my-2 px-6 py-3 rounded-xl cursor-pointer",
+                  "flex items-center gap-3 relative",
+                  "hover:bg-white/10",
+                  (location.pathname === item.path ||
+                    item.children?.some(
+                      (child) => location.pathname === child.path
+                    )) &&
+                    "bg-white/10 text-white before:content-[''] before:absolute before:inset-0 before:border before:border-transparent before:bg-gradient-to-r before:from-pink-500 before:to-purple-600 before:rounded-xl before:-z-10 before:p-[1px] before:mask-gradient"
+                )}
                 whileHover={{ x: 5 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="icon">{item.icon}</span>
-                {!collapsed && <span className="text">{item.text}</span>}
-              </MenuItem>
+                <span className="text-xl min-w-[24px] flex items-center justify-center">
+                  {item.icon}
+                </span>
+                {!collapsed && (
+                  <span className="font-medium whitespace-nowrap">
+                    {item.text}
+                  </span>
+                )}
+              </motion.div>
             </Link>
 
-            {/* 渲染子菜单 */}
             {!collapsed &&
               item.children?.map((child) => (
                 <Link to={child.path} key={child.path}>
-                  <MenuItem
-                    $active={location.pathname === child.path}
+                  <motion.div
+                    className={clsx(
+                      "pl-12 pr-6 py-3 mx-4 my-2 rounded-xl cursor-pointer",
+                      "flex items-center gap-3 relative",
+                      "hover:bg-white/10",
+                      location.pathname === child.path &&
+                        "bg-white/10 text-white before:content-[''] before:absolute before:inset-0 before:border before:border-transparent before:bg-gradient-to-r before:from-pink-500 before:to-purple-600 before:rounded-xl before:-z-10 before:p-[1px] before:mask-gradient"
+                    )}
                     whileHover={{ x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    style={{ paddingLeft: "3rem" }}
                   >
-                    <span className="icon">{child.icon}</span>
-                    <span className="text">{child.text}</span>
-                  </MenuItem>
+                    <span className="text-xl min-w-[24px] flex items-center justify-center">
+                      {child.icon}
+                    </span>
+                    <span className="font-medium whitespace-nowrap">
+                      {child.text}
+                    </span>
+                  </motion.div>
                 </Link>
               ))}
           </div>
         ))}
-      </MenuSection>
-    </SidebarWrapper>
+      </div>
+    </motion.nav>
   );
 };
 
