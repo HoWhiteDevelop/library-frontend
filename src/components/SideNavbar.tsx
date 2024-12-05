@@ -5,12 +5,17 @@ import { motion } from "framer-motion";
 import {
   HomeOutlined,
   BookOutlined,
-  UploadOutlined,
   UserOutlined,
   SettingOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ShoppingCartOutlined,
+  SwapOutlined,
+  BarChartOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const SidebarWrapper = styled(motion.nav)<{ $collapsed: boolean }>`
   position: fixed;
@@ -127,12 +132,40 @@ const CollapseButton = styled(motion.div)`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 `;
 
-const menuItems = [
+// 定义管理员菜单项
+const adminMenuItems = [
   { icon: <HomeOutlined />, text: "首页", path: "/" },
   { icon: <BookOutlined />, text: "图书管理", path: "/books/management" },
-  { icon: <UploadOutlined />, text: "图书上架", path: "/books/upload" },
+  {
+    icon: <BarChartOutlined />,
+    text: "统计报表",
+    path: "/reports",
+    children: [
+      {
+        icon: <FileTextOutlined />,
+        text: "借阅报表",
+        path: "/reports/borrowing",
+      },
+      {
+        icon: <FileTextOutlined />,
+        text: "推荐报表",
+        path: "/reports/recommendations",
+      },
+    ],
+  },
   { icon: <UserOutlined />, text: "个人中心", path: "/profile" },
-  { icon: <SettingOutlined />, text: "系统设置", path: "/settings" },
+];
+
+// 定义普通用户菜单项
+const userMenuItems = [
+  { icon: <HomeOutlined />, text: "首页", path: "/" },
+  { icon: <SwapOutlined />, text: "借阅图书", path: "/books/borrow" },
+  {
+    icon: <ShoppingCartOutlined />,
+    text: "推荐购买",
+    path: "/books/recommend",
+  },
+  { icon: <UserOutlined />, text: "个人中心", path: "/profile" },
 ];
 
 interface SideNavbarProps {
@@ -142,11 +175,15 @@ interface SideNavbarProps {
 const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const handleCollapse = (value: boolean) => {
     setCollapsed(value);
     onCollapse(value);
   };
+
+  // 根据用户角色选择显示的菜单项
+  const menuItems = user?.role === "admin" ? adminMenuItems : userMenuItems;
 
   return (
     <SidebarWrapper
@@ -171,16 +208,40 @@ const SideNavbar = ({ onCollapse }: SideNavbarProps) => {
 
       <MenuSection>
         {menuItems.map((item) => (
-          <Link to={item.path} key={item.path}>
-            <MenuItem
-              $active={location.pathname === item.path}
-              whileHover={{ x: 5 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="icon">{item.icon}</span>
-              {!collapsed && <span className="text">{item.text}</span>}
-            </MenuItem>
-          </Link>
+          <div key={item.path}>
+            <Link to={item.path}>
+              <MenuItem
+                $active={
+                  location.pathname === item.path ||
+                  (item.children?.some(
+                    (child) => location.pathname === child.path
+                  ) ??
+                    false)
+                }
+                whileHover={{ x: 5 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span className="icon">{item.icon}</span>
+                {!collapsed && <span className="text">{item.text}</span>}
+              </MenuItem>
+            </Link>
+
+            {/* 渲染子菜单 */}
+            {!collapsed &&
+              item.children?.map((child) => (
+                <Link to={child.path} key={child.path}>
+                  <MenuItem
+                    $active={location.pathname === child.path}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    style={{ paddingLeft: "3rem" }}
+                  >
+                    <span className="icon">{child.icon}</span>
+                    <span className="text">{child.text}</span>
+                  </MenuItem>
+                </Link>
+              ))}
+          </div>
         ))}
       </MenuSection>
     </SidebarWrapper>

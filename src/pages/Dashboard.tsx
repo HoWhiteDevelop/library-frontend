@@ -18,6 +18,7 @@ import { fetchBooks } from "../store/slices/bookSlice";
 import type { AppDispatch, RootState } from "../store";
 import RecentBorrowList from "../components/RecentBorrowList";
 import PageTransition from "../components/PageTransition";
+import PageLoading from "../components/PageLoading";
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -76,6 +77,10 @@ const Dashboard = () => {
   const availableBooks = books.filter(
     (book) => book.status === "available"
   ).length;
+
+  if (loading) {
+    return <PageLoading tip="正在加载数据..." />;
+  }
 
   return (
     <StyledContent>

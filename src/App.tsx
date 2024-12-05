@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,12 +6,13 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { ConfigProvider, App as AntApp, Layout } from "antd";
+import { ConfigProvider, App as AntApp } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import styled from "styled-components";
 import SideNavbar from "./components/SideNavbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { restoreSession } from "./store/slices/authSlice";
+import PageLoading from "./components/PageLoading";
 
 // 页面组件导入
 import Login from "./pages/Login";
@@ -22,6 +23,8 @@ import BookManagement from "./pages/BookManagement";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import OAuthCallback from "./pages/OAuthCallback";
+// import BookUpload from "./pages/BookUpload";
+// import Statistics from "./pages/Statistics";
 
 // 类型定义
 interface RootState {
@@ -78,51 +81,74 @@ function App() {
               $hasNavbar={isAuthenticated}
               className={collapsed ? "collapsed" : ""}
             >
-              <Routes>
-                <Route
-                  path="/login"
-                  element={
-                    !isAuthenticated ? <Login /> : <Navigate to="/dashboard" />
-                  }
-                />
-
-                <Route
-                  element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
-                >
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/books/recommend" element={<BookRecommend />} />
-                  <Route path="/books/borrow" element={<BookBorrow />} />
+              <Suspense fallback={<PageLoading />}>
+                <Routes>
+                  <Route
+                    path="/login"
+                    element={
+                      !isAuthenticated ? (
+                        <Login />
+                      ) : (
+                        <Navigate to="/dashboard" />
+                      )
+                    }
+                  />
 
                   <Route
                     element={
-                      <ProtectedRoute
-                        isAuthenticated={isAuthenticated}
-                        requiredRole="admin"
-                        userRole={user?.role}
-                      />
+                      <ProtectedRoute isAuthenticated={isAuthenticated} />
                     }
                   >
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route
-                      path="/books/management"
-                      element={<BookManagement />}
+                      path="/books/recommend"
+                      element={<BookRecommend />}
                     />
-                    <Route path="/reports/*" element={<Reports />} />
+                    <Route path="/books/borrow" element={<BookBorrow />} />
+
+                    <Route
+                      element={
+                        <ProtectedRoute
+                          isAuthenticated={isAuthenticated}
+                          requiredRole="admin"
+                          userRole={user?.role}
+                        />
+                      }
+                    >
+                      <Route
+                        path="/books/management"
+                        element={<BookManagement />}
+                      />
+                      {/* <Route path="/books/upload" element={<BookUpload />} /> */}
+                      <Route path="/reports" element={<Reports />} />
+                      {/* <Route
+                        path="/reports/statistics"
+                        element={<Statistics />}
+                      /> */}
+                      <Route path="/reports/borrowing" element={<Reports />} />
+                      <Route
+                        path="/reports/recommendations"
+                        element={<Reports />}
+                      />
+                    </Route>
                   </Route>
-                </Route>
 
-                <Route
-                  path="/auth/:provider/callback"
-                  element={<OAuthCallback />}
-                />
+                  <Route
+                    path="/auth/:provider/callback"
+                    element={<OAuthCallback />}
+                  />
 
-                <Route
-                  path="/"
-                  element={
-                    <Navigate to={isAuthenticated ? "/dashboard" : "/login"} />
-                  }
-                />
-              </Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <Navigate
+                        to={isAuthenticated ? "/dashboard" : "/login"}
+                      />
+                    }
+                  />
+                </Routes>
+              </Suspense>
             </MainContent>
           </AppLayout>
         </Router>
