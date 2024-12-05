@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,9 +6,10 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { ConfigProvider, App as AntApp } from "antd";
+import { ConfigProvider, App as AntApp, Layout } from "antd";
 import zhCN from "antd/locale/zh_CN";
-import Layout from "./components/Layout";
+import styled from "styled-components";
+import SideNavbar from "./components/SideNavbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { restoreSession } from "./store/slices/authSlice";
 
@@ -32,11 +33,27 @@ interface RootState {
   };
 }
 
+const AppLayout = styled.div`
+  min-height: 100vh;
+  display: flex;
+`;
+
+const MainContent = styled.div<{ $hasNavbar: boolean }>`
+  flex: 1;
+  margin-left: ${(props) => (props.$hasNavbar ? "240px" : "0")};
+  transition: margin 0.3s ease;
+
+  &.collapsed {
+    margin-left: ${(props) => (props.$hasNavbar ? "80px" : "0")};
+  }
+`;
+
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
   );
+  const [collapsed, setCollapsed] = useState(false);
 
   // 添加初始化逻辑
   useEffect(() => {
@@ -55,57 +72,59 @@ function App() {
         locale={zhCN}
       >
         <Router>
-          <Routes>
-            <Route
-              path="/login"
-              element={
-                !isAuthenticated ? <Login /> : <Navigate to="/dashboard" />
-              }
-            />
-
-            <Route element={<Layout />}>
-              {/* 需要认证的路由 */}
-              <Route
-                element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
-              >
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
-
-                {/* 读者路由 */}
-                <Route path="/books/recommend" element={<BookRecommend />} />
-                <Route path="/books/borrow" element={<BookBorrow />} />
-
-                {/* 管理员路由 */}
+          <AppLayout>
+            {isAuthenticated && <SideNavbar onCollapse={setCollapsed} />}
+            <MainContent
+              $hasNavbar={isAuthenticated}
+              className={collapsed ? "collapsed" : ""}
+            >
+              <Routes>
                 <Route
+                  path="/login"
                   element={
-                    <ProtectedRoute
-                      isAuthenticated={isAuthenticated}
-                      requiredRole="admin"
-                      userRole={user?.role}
-                    />
+                    !isAuthenticated ? <Login /> : <Navigate to="/dashboard" />
                   }
-                >
-                  <Route
-                    path="/books/management"
-                    element={<BookManagement />}
-                  />
-                  <Route path="/reports/*" element={<Reports />} />
-                </Route>
-              </Route>
-            </Route>
+                />
 
-            {/* 默认路由重定向 */}
-            <Route
-              path="/"
-              element={
-                <Navigate to={isAuthenticated ? "/dashboard" : "/login"} />
-              }
-            />
-            <Route
-              path="/auth/:provider/callback"
-              element={<OAuthCallback />}
-            />
-          </Routes>
+                <Route
+                  element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
+                >
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/books/recommend" element={<BookRecommend />} />
+                  <Route path="/books/borrow" element={<BookBorrow />} />
+
+                  <Route
+                    element={
+                      <ProtectedRoute
+                        isAuthenticated={isAuthenticated}
+                        requiredRole="admin"
+                        userRole={user?.role}
+                      />
+                    }
+                  >
+                    <Route
+                      path="/books/management"
+                      element={<BookManagement />}
+                    />
+                    <Route path="/reports/*" element={<Reports />} />
+                  </Route>
+                </Route>
+
+                <Route
+                  path="/auth/:provider/callback"
+                  element={<OAuthCallback />}
+                />
+
+                <Route
+                  path="/"
+                  element={
+                    <Navigate to={isAuthenticated ? "/dashboard" : "/login"} />
+                  }
+                />
+              </Routes>
+            </MainContent>
+          </AppLayout>
         </Router>
       </ConfigProvider>
     </AntApp>
