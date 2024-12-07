@@ -15,8 +15,8 @@ const RecentBorrowList = ({ books }: RecentBorrowListProps) => {
       const bDate =
         b.borrowHistory?.[b.borrowHistory.length - 1].borrowDate || "";
       return new Date(bDate).getTime() - new Date(aDate).getTime();
-    })
-    .slice(0, 5);
+    });
+  // .slice(0, 5);
 
   return (
     <List

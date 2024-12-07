@@ -19,6 +19,7 @@ import type { AppDispatch, RootState } from "../store";
 import RecentBorrowList from "../components/RecentBorrowList";
 import PageTransition from "../components/PageTransition";
 import PageLoading from "../components/PageLoading";
+import BookGrid from "../components/books/BookGrid";
 
 const { Content } = Layout;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -260,6 +261,11 @@ const Dashboard = () => {
                 </Row>
               </div>
             )}
+
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-6">推荐图书</h2>
+              <BookGrid />
+            </div>
           </div>
         </PageTransition>
       </ContentWrapper>
