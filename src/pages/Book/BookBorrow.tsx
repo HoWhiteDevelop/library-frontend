@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { Table, Card, Input, Button, Tag, App } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBooks } from "../store/slices/bookSlice";
-import { borrowBook } from "../api/books";
-import type { Book } from "../types/book";
-import type { AppDispatch, RootState } from "../store";
-import PageTransition from "../components/PageTransition";
+import { fetchBooks } from "../../store/slices/bookSlice";
+import { borrowBook } from "../../api/books";
+import type { Book } from "../../types/book";
+import type { AppDispatch, RootState } from "../../store";
+import PageTransition from "../../components/PageTransition";
 
 const { Search } = Input;
 

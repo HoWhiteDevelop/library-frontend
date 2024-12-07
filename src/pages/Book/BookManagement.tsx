@@ -14,10 +14,10 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBooks } from "../store/slices/bookSlice";
-import { addBook, updateBook, deleteBook } from "../api/books";
-import type { Book, BookFormData } from "../types/book";
-import type { AppDispatch, RootState } from "../store";
+import { fetchBooks } from "../../store/slices/bookSlice";
+import { addBook, updateBook, deleteBook } from "../../api/books";
+import type { Book, BookFormData } from "../../types/book";
+import type { AppDispatch, RootState } from "../../store";
 
 const { Search } = Input;
 const { TextArea } = Input;

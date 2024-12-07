@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -15,28 +15,7 @@ import { restoreSession } from "./store/slices/authSlice";
 import PageLoading from "./components/PageLoading";
 import TopNavbar from "./components/TopNavbar";
 import LoadingScreen from "./components/LoadingScreen";
-
-// 页面组件导入
-const Login = lazy(() => import("./pages/Login"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const BookRecommend = lazy(() => import("./pages/BookRecommend"));
-const BookBorrow = lazy(() => import("./pages/BookBorrow"));
-const BookManagement = lazy(() => import("./pages/BookManagement"));
-const Reports = lazy(() => import("./pages/Reports"));
-const Profile = lazy(() => import("./pages/Profile"));
-const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
-// import BookUpload from "./pages/BookUpload";
-// import Statistics from "./pages/Statistics";
-
-// 类型定义
-interface RootState {
-  auth: {
-    isAuthenticated: boolean;
-    user: {
-      role: string;
-    } | null;
-  };
-}
+import { publicRoutes, protectedRoutes } from "./routes";
 
 const AppLayout = styled.div`
   min-height: 100vh;
@@ -93,62 +72,28 @@ function App() {
               {isAuthenticated && <TopNavbar />}
               <Suspense fallback={<LoadingScreen />}>
                 <Routes>
-                  <Route
-                    path="/login"
-                    element={
-                      !isAuthenticated ? (
-                        <Login />
-                      ) : (
-                        <Navigate to="/dashboard" />
-                      )
-                    }
-                  />
-
+                  {publicRoutes.map((route) => (
+                    <Route
+                      key={route.path}
+                      path={route.path}
+                      element={
+                        !isAuthenticated ? (
+                          route.element
+                        ) : (
+                          <Navigate to="/dashboard" />
+                        )
+                      }
+                    />
+                  ))}
                   <Route
                     element={
                       <ProtectedRoute isAuthenticated={isAuthenticated} />
                     }
                   >
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route
-                      path="/books/recommend"
-                      element={<BookRecommend />}
-                    />
-                    <Route path="/books/borrow" element={<BookBorrow />} />
-
-                    <Route
-                      element={
-                        <ProtectedRoute
-                          isAuthenticated={isAuthenticated}
-                          requiredRole="admin"
-                          userRole={user?.role}
-                        />
-                      }
-                    >
-                      <Route
-                        path="/books/management"
-                        element={<BookManagement />}
-                      />
-                      {/* <Route path="/books/upload" element={<BookUpload />} /> */}
-                      <Route path="/reports" element={<Reports />} />
-                      {/* <Route
-                        path="/reports/statistics"
-                        element={<Statistics />}
-                      /> */}
-                      <Route path="/reports/borrowing" element={<Reports />} />
-                      <Route
-                        path="/reports/recommendations"
-                        element={<Reports />}
-                      />
-                    </Route>
+                    {protectedRoutes.map((route) => (
+                      <Route key={route.path} {...route} />
+                    ))}
                   </Route>
-
-                  <Route
-                    path="/auth/:provider/callback"
-                    element={<OAuthCallback />}
-                  />
-
                   <Route
                     path="/"
                     element={

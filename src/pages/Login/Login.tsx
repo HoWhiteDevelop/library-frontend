@@ -9,10 +9,10 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../store/slices/authSlice";
-import type { AppDispatch, RootState } from "../store";
+import { login } from "../../store/slices/authSlice";
+import type { AppDispatch, RootState } from "../../store";
 import { motion } from "framer-motion";
-import { getOAuthURL } from "../api/auth";
+import { getOAuthURL } from "../../api/auth";
 
 const Login = () => {
   const { message } = App.useApp();
