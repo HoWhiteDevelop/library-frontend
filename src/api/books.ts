@@ -1,6 +1,23 @@
 import axios from "./axios";
 import type { Book } from "../types/book";
 
+// 定义借阅历史记录的接口
+interface LoanHistory {
+  id: number;
+  bookId: number;
+  bookTitle: string;
+  bookAuthor: string;
+  bookIsbn: string;
+  loanDate: string;
+  returnDate: string | null;
+  status: string;
+  currentBookStatus: string;
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
 interface BookQuery {
   q?: string;
   fields?: string;
@@ -51,4 +68,9 @@ export const updateBook = (id: string, bookData: Partial<Book>) => {
 // 删除图书
 export const deleteBook = (id: string) => {
   return axios.delete(`/books/${id}`);
+};
+
+// 获取借阅历史
+export const getLoanHistory = () => {
+  return axios.get<ApiResponse<LoanHistory[]>>("/books/loans/history");
 };

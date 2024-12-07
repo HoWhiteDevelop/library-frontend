@@ -14,7 +14,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchBooks } from "../store/slices/bookSlice";
+import { fetchBooks, fetchLoanHistory } from "../store/slices/bookSlice";
 import type { AppDispatch, RootState } from "../store";
 import RecentBorrowList from "../components/RecentBorrowList";
 import PageTransition from "../components/PageTransition";
@@ -50,6 +50,9 @@ const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { books, loading } = useSelector((state: RootState) => state.book);
+  const { loanHistory, historyLoading } = useSelector(
+    (state: RootState) => state.book
+  );
   const { user } = useSelector((state: RootState) => state.auth);
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, -100]);
@@ -69,8 +72,12 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchBooks());
+    // dispatch(fetchBooks());
+    dispatch(fetchLoanHistory());
   }, [dispatch]);
+
+  // console.log(books);
+  console.log(loanHistory);
 
   const totalBooks = books.length;
   const borrowedBooks = books.filter(
@@ -241,7 +248,7 @@ const Dashboard = () => {
                       loading={loading}
                       className="h-96 overflow-auto hover:shadow-lg transition-shadow duration-300"
                     >
-                      <RecentBorrowList books={books} />
+                      <RecentBorrowList books={loanHistory} />
                     </Card>
                   </Col>
                   <Col xs={24} lg={12}>

@@ -40,9 +40,4 @@ export default defineConfig({
     // 消除打包大小警告
     chunkSizeWarningLimit: 2000,
   },
-  // css: {
-  //   postcss: {
-  //     from: undefined,
-  //   },
-  // },
 });

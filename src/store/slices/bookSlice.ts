@@ -1,32 +1,50 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { message } from "antd";
-import { getBooks, recommendBook } from "../../api/books";
-import type { Book } from "../../types/book";
+import { getBooks, recommendBook, getLoanHistory } from "../../api/books";
+import type { Book, LoanRecord, ApiResponse } from "../../types/book";
 
 interface BookState {
   books: Book[];
+  loanHistory: LoanRecord[];
   loading: boolean;
+  historyLoading: boolean;
   error: string | null;
 }
 
 const initialState: BookState = {
   books: [],
+  loanHistory: [],
   loading: false,
+  historyLoading: false,
   error: null,
 };
 
-export const fetchBooks = createAsyncThunk("book/fetchBooks", async () => {
+export const fetchBooks = createAsyncThunk<
+  Book[],
+  void,
+  { rejectValue: string }
+>("book/fetchBooks", async () => {
   const response = await getBooks();
   return response.data;
 });
 
-export const createBookRecommendation = createAsyncThunk(
-  "book/recommend",
-  async (bookData: Partial<Book>) => {
-    const response = await recommendBook(bookData);
-    return response.data;
-  }
-);
+export const createBookRecommendation = createAsyncThunk<
+  ApiResponse<Book>,
+  Partial<Book>,
+  { rejectValue: string }
+>("book/recommend", async (bookData) => {
+  const response = await recommendBook(bookData);
+  return response.data;
+});
+
+export const fetchLoanHistory = createAsyncThunk<
+  LoanRecord[],
+  void,
+  { rejectValue: string }
+>("book/fetchLoanHistory", async () => {
+  const response = await getLoanHistory();
+  return response.data.data;
+});
 
 const bookSlice = createSlice({
   name: "book",
@@ -47,8 +65,21 @@ const bookSlice = createSlice({
         state.error = action.error.message || "获取图书列表失败";
         message.error(state.error);
       })
-      .addCase(createBookRecommendation.fulfilled, (_state, _action) => {
+      .addCase(createBookRecommendation.fulfilled, (state, action) => {
         message.success("图书推荐成功");
+      })
+      .addCase(fetchLoanHistory.pending, (state) => {
+        state.historyLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchLoanHistory.fulfilled, (state, action) => {
+        state.loanHistory = action.payload;
+        state.historyLoading = false;
+      })
+      .addCase(fetchLoanHistory.rejected, (state, action) => {
+        state.historyLoading = false;
+        state.error = action.error.message || "获取借阅历史失败";
+        message.error(state.error);
       });
   },
 });
