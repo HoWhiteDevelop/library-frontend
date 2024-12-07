@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,14 +17,14 @@ import TopNavbar from "./components/TopNavbar";
 import LoadingScreen from "./components/LoadingScreen";
 
 // 页面组件导入
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import BookRecommend from "./pages/BookRecommend";
-import BookBorrow from "./pages/BookBorrow";
-import BookManagement from "./pages/BookManagement";
-import Reports from "./pages/Reports";
-import Profile from "./pages/Profile";
-import OAuthCallback from "./pages/OAuthCallback";
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const BookRecommend = lazy(() => import("./pages/BookRecommend"));
+const BookBorrow = lazy(() => import("./pages/BookBorrow"));
+const BookManagement = lazy(() => import("./pages/BookManagement"));
+const Reports = lazy(() => import("./pages/Reports"));
+const Profile = lazy(() => import("./pages/Profile"));
+const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 // import BookUpload from "./pages/BookUpload";
 // import Statistics from "./pages/Statistics";
 
@@ -66,6 +66,11 @@ function App() {
   useEffect(() => {
     dispatch(restoreSession());
   }, [dispatch]);
+
+  // 在合适的时机预加载
+  const prefetchDashboard = () => {
+    import("./pages/Dashboard");
+  };
 
   return (
     <AntApp>
