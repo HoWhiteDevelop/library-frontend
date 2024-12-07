@@ -17,6 +17,15 @@ import TopNavbar from "./components/TopNavbar";
 import LoadingScreen from "./components/LoadingScreen";
 import { publicRoutes, protectedRoutes } from "./routes";
 
+interface RootState {
+  auth: {
+    isAuthenticated: boolean;
+    user: {
+      role: string;
+    } | null;
+  };
+}
+
 const AppLayout = styled.div`
   min-height: 100vh;
   display: flex;

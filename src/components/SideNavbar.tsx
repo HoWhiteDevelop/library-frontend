@@ -27,7 +27,18 @@ interface MenuItem {
 // 定义管理员菜单项
 const adminMenuItems: MenuItem[] = [
   { icon: <HomeOutlined />, text: "首页", path: "/dashboard" },
-  { icon: <BookOutlined />, text: "图书管理", path: "/books/management" },
+  {
+    icon: <BookOutlined />,
+    text: "图书管理",
+    path: "/books/management",
+    children: [
+      {
+        icon: <SwapOutlined />,
+        text: "图书借阅",
+        path: "/books/borrow",
+      },
+    ],
+  },
   {
     icon: <BarChartOutlined />,
     text: "统计报表",

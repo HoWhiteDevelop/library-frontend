@@ -25,6 +25,7 @@ export const login = createAsyncThunk(
   "auth/login",
   async (
     credentials: { username: string; password: string },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { rejectWithValue }
   ) => {
     console.log("发送登录请求:", credentials);

@@ -37,6 +37,16 @@ const OAuthCallback = lazy(() =>
     default: module.default,
   }))
 );
+const BorrowReport = lazy(() =>
+  import("../pages/reports/BorrowReport").then((module) => ({
+    default: module.default,
+  }))
+);
+const BookStatusReport = lazy(() =>
+  import("../pages/reports/BookStatusReport").then((module) => ({
+    default: module.default,
+  }))
+);
 
 // 公开路由
 export const publicRoutes: RouteObject[] = [
@@ -75,5 +85,13 @@ export const protectedRoutes: RouteObject[] = [
   {
     path: "/reports",
     element: React.createElement(Reports),
+  },
+  {
+    path: "/reports/borrowing",
+    element: React.createElement(BorrowReport),
+  },
+  {
+    path: "/reports/recommendations",
+    element: React.createElement(BookStatusReport),
   },
 ];

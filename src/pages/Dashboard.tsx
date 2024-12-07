@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Layout, Typography } from "antd";
 import styled from "styled-components";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -21,6 +21,7 @@ import PageTransition from "../components/PageTransition";
 import PageLoading from "../components/PageLoading";
 
 const { Content } = Layout;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { Title } = Typography;
 
 const StyledContent = styled(Content)`
