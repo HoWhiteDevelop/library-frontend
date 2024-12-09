@@ -6,26 +6,21 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        primary: {
-          DEFAULT: '#1890ff',
-          light: '#40a9ff',
-          dark: '#096dd9',
-        },
-        secondary: {
-          DEFAULT: '#64748b',
-          light: '#94a3b8',
-          dark: '#475569',
-        }
+      animation: {
+        gradient: 'gradient 3s linear infinite',
+        bounce: 'bounce 1s infinite',
       },
-      spacing: {
-        '128': '32rem',
-        '144': '36rem',
+      keyframes: {
+        gradient: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
       },
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('tailwind-scrollbar'),
   ],
   corePlugins: {
     preflight: false,

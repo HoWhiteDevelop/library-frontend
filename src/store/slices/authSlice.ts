@@ -25,6 +25,7 @@ export const login = createAsyncThunk(
   "auth/login",
   async (
     credentials: { username: string; password: string },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { rejectWithValue }
   ) => {
     console.log("发送登录请求:", credentials);
@@ -55,16 +56,16 @@ export const login = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk("auth/logout", async () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userAvatar");
+  return null;
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.isAuthenticated = false;
-      state.user = null;
-      localStorage.removeItem("token");
-      localStorage.removeItem("userAvatar");
-    },
     restoreSession: (state) => {
       const token = localStorage.getItem("token");
       const avatar = localStorage.getItem("userAvatar");
@@ -111,9 +112,14 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) || "登录失败";
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        state.error = null;
       });
   },
 });
 
-export const { logout, restoreSession, updateUserAvatar } = authSlice.actions;
+export const { restoreSession, updateUserAvatar } = authSlice.actions;
 export default authSlice.reducer;

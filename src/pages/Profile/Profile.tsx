@@ -18,9 +18,9 @@ import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile } from "antd/es/upload/interface";
 import type { ColumnsType } from "antd/es/table";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUserAvatar } from "../store/slices/authSlice";
-import type { Book } from "../types/book";
-import type { RootState } from "../store";
+import { updateUserAvatar } from "../../store/slices/authSlice";
+import type { Book } from "../../types/book";
+import type { RootState } from "../../store";
 
 interface UserInfo {
   id: string;

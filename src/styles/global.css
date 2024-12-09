@@ -1,0 +1,41 @@
+*,
+*::before,
+*::after {
+  cursor: none !important;
+}
+
+/* 确保所有交互元素的光标样式 */
+a,
+button,
+input,
+textarea,
+select,
+[role="button"],
+.ant-btn,
+.ant-input,
+.ant-select-selector,
+.ant-picker,
+.ant-menu-item,
+.ant-menu-submenu {
+  cursor: none !important;
+}
+
+/* 修复 antd 组件的光标样式 */
+.ant-select-dropdown *,
+.ant-picker-dropdown *,
+.ant-modal *,
+.ant-popover * {
+  cursor: none !important;
+}
+
+/* 在移动设备上禁用自定义光标 */
+@media (max-width: 768px) {
+  * {
+    cursor: auto !important;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}

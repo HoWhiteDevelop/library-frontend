@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Form, Input, Button, Card, InputNumber, message } from "antd";
 import { useDispatch } from "react-redux";
-import { createBookRecommendation } from "../store/slices/bookSlice";
-import { getBookByIsbn } from "../api/books";
-import type { AppDispatch } from "../store";
-import type { BookFormData } from "../types/book";
+import { createBookRecommendation } from "../../store/slices/bookSlice";
+import { getBookByIsbn } from "../../api/books";
+import type { AppDispatch } from "../../store";
+import type { BookFormData } from "../../types/book";
 
 const { TextArea } = Input;
 
