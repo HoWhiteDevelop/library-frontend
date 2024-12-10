@@ -145,6 +145,7 @@ const Dashboard = () => {
               </div>
             </div>
 
+
             <div className="welcome-banner mb-8 p-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
               <div className="flex items-center justify-between">
                 <div>
@@ -273,6 +274,9 @@ const Dashboard = () => {
               <h2 className="text-2xl font-bold mb-6">推荐图书</h2>
               <BookGrid />
             </div>
+
+
+            
           </div>
         </PageTransition>
       </ContentWrapper>

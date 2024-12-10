@@ -52,6 +52,12 @@ const Layout = () => {
           key: "books/recommend",
           label: "图书荐购",
         },
+
+        {
+          key: "books/details",
+          label: "图书详情",
+        },
+
         ...(user?.role === "admin"
           ? [
               {

@@ -48,6 +48,12 @@ const BookStatusReport = lazy(() =>
   }))
 );
 
+const BookList = lazy(( )=>
+  import("../pages/Book/BookList").then((module) => ({
+    default: module.default,
+  }))
+);
+
 // 公开路由
 export const publicRoutes: RouteObject[] = [
   {
@@ -94,4 +100,10 @@ export const protectedRoutes: RouteObject[] = [
     path: "/reports/recommendations",
     element: React.createElement(BookStatusReport),
   },
+
+  {
+    path: "/books/details",
+    element: React.createElement(BookList),
+  },
+
 ];
