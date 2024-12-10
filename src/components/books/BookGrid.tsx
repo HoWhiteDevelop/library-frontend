@@ -7,7 +7,7 @@ import type { Book } from "../../types/book";
 const BookGrid = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const fetchBooks = async () => {
       try {
