@@ -11,6 +11,9 @@ import {
   SwapOutlined,
   BarChartOutlined,
   FileTextOutlined,
+
+  DesktopOutlined,
+
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -37,6 +40,13 @@ const adminMenuItems: MenuItem[] = [
         text: "图书借阅",
         path: "/books/borrow",
       },
+
+
+      {
+        icon: <DesktopOutlined />,
+        text: "图书详情",
+        path: "/books/details",
+      }
     ],
   },
   {
@@ -63,6 +73,9 @@ const adminMenuItems: MenuItem[] = [
 const userMenuItems: MenuItem[] = [
   { icon: <HomeOutlined />, text: "首页", path: "/dashboard" },
   { icon: <SwapOutlined />, text: "借阅图书", path: "/books/borrow" },
+
+  { icon: <DesktopOutlined />, text: "图书详情", path: "books/details"},
+
   {
     icon: <ShoppingCartOutlined />,
     text: "推荐购买",
