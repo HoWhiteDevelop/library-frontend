@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "pnpm run dev",
     "build-ts": "tsc -b && vite build",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop frontend-app"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
