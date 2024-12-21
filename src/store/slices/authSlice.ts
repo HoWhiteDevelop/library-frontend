@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { login as loginApi } from "../../api/auth";
 import { AxiosError } from "axios";
+import { getAvatarPath } from "../../utils/avatarStorage";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -68,28 +69,28 @@ const authSlice = createSlice({
   reducers: {
     restoreSession: (state) => {
       const token = localStorage.getItem("token");
-      const avatar = localStorage.getItem("userAvatar");
 
       if (token) {
         try {
           const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+          const avatarPath = getAvatarPath(tokenPayload.sub);
+
           state.isAuthenticated = true;
           state.user = {
             id: tokenPayload.sub,
             name: tokenPayload.username,
             role: tokenPayload.role,
-            avatar: avatar || undefined,
+            avatar: avatarPath || undefined,
           };
         } catch (error) {
           localStorage.removeItem("token");
-          localStorage.removeItem("userAvatar");
         }
       }
     },
     updateUserAvatar: (state, action: PayloadAction<string>) => {
       if (state.user) {
         state.user.avatar = action.payload;
-        localStorage.setItem("userAvatar", action.payload);
+        localStorage.setItem(`avatar_${state.user.id}`, action.payload);
       }
     },
   },

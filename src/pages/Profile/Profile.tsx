@@ -21,6 +21,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateUserAvatar } from "../../store/slices/authSlice";
 import type { Book } from "../../types/book";
 import type { RootState } from "../../store";
+import { saveAvatar } from "../../utils/avatarStorage";
 
 interface UserInfo {
   id: string;
@@ -64,15 +65,34 @@ const Profile = () => {
     if (!file) return;
 
     try {
-      getBase64(file as RcFile, (url) => {
-        setLoading(false);
-        dispatch(updateUserAvatar(url));
-        localStorage.setItem("userAvatar", url);
-        message.success("头像更新成功");
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const response = await fetch("/api/upload-avatar", {
+        method: "POST",
+        body: formData,
       });
-    } catch (error) {
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || "上传失败");
+      }
+
+      dispatch(updateUserAvatar(result.path));
       setLoading(false);
-      message.error("头像更新失败");
+      message.success("头像更新成功");
+    } catch (error) {
+      console.error("头像更新失败:", error);
+      setLoading(false);
+      message.error(
+        `头像更新失败: ${error instanceof Error ? error.message : "未知错误"}`
+      );
     }
   };
 
@@ -195,6 +215,10 @@ const Profile = () => {
                   src={user.avatar}
                   alt="avatar"
                   className="cursor-pointer hover:opacity-80"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/default-avatar.png"; // 添加一个默认头像
+                  }}
                 />
               ) : (
                 uploadButton

@@ -4,7 +4,7 @@ import { store } from "../store";
 import { logout } from "../store/slices/authSlice";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "http://120.46.218.237:3000",
   timeout: 5000,
 });
 
