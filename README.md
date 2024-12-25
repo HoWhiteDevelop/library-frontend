@@ -1,6 +1,7 @@
 # 图书馆管理系统前端
 
-基于 React + TypeScript + Ant Design 的现代化图书馆管理系统前端。
+![alt text](src/assets/display/login.png)
+基于 React + TypeScript + Ant Design + tailwindcss 的现代化图书馆管理系统前端。
 
 ## 📋 功能模块
 
